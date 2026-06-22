@@ -269,7 +269,7 @@
             <div class="card-sidebar">
               <label>Stakeholders</label>
               <ul>
-                ${(d.stakeholders || []).map(s => `<li>${esc(s)}</li>`).join('')}
+                ${[...(d.stakeholders || [])].sort((a, b) => a.localeCompare(b)).map(s => `<li>${esc(s)}</li>`).join('')}
               </ul>
             </div>` : ''}
           </div>
