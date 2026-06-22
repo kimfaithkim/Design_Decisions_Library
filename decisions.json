@@ -1,18 +1,9 @@
 [
   {
-    "id": 1,
-    "date": "2026-06-22",
-    "title": "Example Decision",
-    "decision": "We decided to use GitHub Pages to host the project history.",
-    "rationale": "Free hosting, no backend required, accessible to all stakeholders via a public URL.",
-    "alternatives": "Notion, Confluence, Supabase-backed app.",
-    "stakeholders": ["Faith Kim"],
-    "tags": ["infrastructure", "tooling"]
-  },
-  {
     "id": 2,
     "date": "2026-06-18",
     "title": "Not Inducted Status",
+    "project": "Scandit",
     "decision": "Bring back the 'Not Inducted' category within the scan summary.",
     "rationale": "'Not Inducted' is meaningfully different from the existing statuses and warrants its own distinct category.",
     "alternatives": "Not showing the category, since it is accounted for in the other statuses.",

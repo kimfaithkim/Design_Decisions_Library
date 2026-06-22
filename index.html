@@ -30,6 +30,30 @@
       font-size: 0.95rem;
     }
 
+    #tabs {
+      max-width: 720px;
+      margin: 0 auto 1.25rem;
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .tab {
+      padding: 0.4rem 1rem;
+      border-radius: 99px;
+      border: 1px solid #ddd;
+      background: white;
+      font-size: 0.875rem;
+      cursor: pointer;
+      color: #555;
+    }
+
+    .tab.active {
+      background: #1a1a1a;
+      border-color: #1a1a1a;
+      color: white;
+      font-weight: 500;
+    }
+
     #search {
       max-width: 720px;
       margin: 0 auto 1.5rem;
@@ -115,7 +139,7 @@
 
     .card-sidebar ul li {
       font-size: 0.82rem;
-      color: #3b5bdb;
+      color: #1a1a1a;
     }
 
     .card-section {
@@ -168,6 +192,12 @@
     <p>Design decisions and rationale from stakeholder discussions.</p>
   </header>
 
+  <div id="tabs">
+    <button class="tab active" data-project="All">All</button>
+    <button class="tab" data-project="Scandit">Scandit</button>
+    <button class="tab" data-project="Carton Audit">Carton Audit</button>
+  </div>
+
   <input id="search" type="search" placeholder="Search decisions..." />
 
   <div id="decisions"></div>
@@ -175,13 +205,33 @@
 
   <script>
     let allDecisions = [];
+    let activeProject = 'All';
 
     async function load() {
       const res = await fetch('decisions.json');
       allDecisions = await res.json();
       allDecisions.sort((a, b) => new Date(b.date) - new Date(a.date));
-      render(allDecisions);
+      render(filtered());
     }
+
+    function filtered() {
+      const q = document.getElementById('search').value.toLowerCase();
+      return allDecisions.filter(d => {
+        const matchProject = activeProject === 'All' || d.project === activeProject;
+        const matchSearch = !q || [d.title, d.decision, d.rationale, d.alternatives, ...(d.stakeholders || [])]
+          .filter(Boolean).some(f => f.toLowerCase().includes(q));
+        return matchProject && matchSearch;
+      });
+    }
+
+    document.getElementById('tabs').addEventListener('click', e => {
+      const tab = e.target.closest('.tab');
+      if (!tab) return;
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      activeProject = tab.dataset.project;
+      render(filtered());
+    });
 
     function render(decisions) {
       const container = document.getElementById('decisions');
@@ -242,13 +292,7 @@
       });
     }
 
-    document.getElementById('search').addEventListener('input', e => {
-      const q = e.target.value.toLowerCase();
-      render(allDecisions.filter(d =>
-        [d.title, d.decision, d.rationale, d.alternatives, ...(d.tags || []), ...(d.stakeholders || [])]
-          .filter(Boolean).some(f => f.toLowerCase().includes(q))
-      ));
-    });
+    document.getElementById('search').addEventListener('input', () => render(filtered()));
 
     load();
   </script>
