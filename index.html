@@ -79,6 +79,45 @@
       padding-top: 2px;
     }
 
+    .card-body {
+      display: flex;
+      gap: 1.25rem;
+    }
+
+    .card-main {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .card-sidebar {
+      width: 140px;
+      flex-shrink: 0;
+      border-left: 1px solid #f0f0f0;
+      padding-left: 1.25rem;
+    }
+
+    .card-sidebar label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #888;
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+
+    .card-sidebar ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+
+    .card-sidebar ul li {
+      font-size: 0.82rem;
+      color: #3b5bdb;
+    }
+
     .card-section {
       margin-bottom: 0.6rem;
     }
@@ -110,14 +149,6 @@
       font-size: 0.75rem;
       background: #f0f0f0;
       color: #555;
-      padding: 0.2rem 0.55rem;
-      border-radius: 99px;
-    }
-
-    .stakeholder {
-      font-size: 0.75rem;
-      background: #e8f0fe;
-      color: #3b5bdb;
       padding: 0.2rem 0.55rem;
       border-radius: 99px;
     }
@@ -169,22 +200,33 @@
             <span class="card-title">${esc(d.title)}</span>
             <span class="card-date">${formatDate(d.date)}</span>
           </div>
-          <div class="card-section">
-            <label>Decision</label>
-            <p>${esc(d.decision)}</p>
-          </div>
-          <div class="card-section">
-            <label>Rationale</label>
-            <p>${esc(d.rationale)}</p>
-          </div>
-          ${d.alternatives ? `
-          <div class="card-section">
-            <label>Alternatives Considered</label>
-            <p>${esc(d.alternatives)}</p>
-          </div>` : ''}
-          <div class="card-footer">
-            ${(d.stakeholders || []).map(s => `<span class="stakeholder">${esc(s)}</span>`).join('')}
-            ${(d.tags || []).map(t => `<span class="tag">${esc(t)}</span>`).join('')}
+          <div class="card-body">
+            <div class="card-main">
+              <div class="card-section">
+                <label>Decision</label>
+                <p>${esc(d.decision)}</p>
+              </div>
+              <div class="card-section">
+                <label>Rationale</label>
+                <p>${esc(d.rationale)}</p>
+              </div>
+              ${d.alternatives ? `
+              <div class="card-section">
+                <label>Alternatives Considered</label>
+                <p>${esc(d.alternatives)}</p>
+              </div>` : ''}
+              ${(d.tags || []).length ? `
+              <div class="card-footer">
+                ${(d.tags || []).map(t => `<span class="tag">${esc(t)}</span>`).join('')}
+              </div>` : ''}
+            </div>
+            ${(d.stakeholders || []).length ? `
+            <div class="card-sidebar">
+              <label>Stakeholders</label>
+              <ul>
+                ${(d.stakeholders || []).map(s => `<li>${esc(s)}</li>`).join('')}
+              </ul>
+            </div>` : ''}
           </div>
         </div>
       `).join('');
