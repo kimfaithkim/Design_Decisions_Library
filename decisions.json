@@ -9,5 +9,15 @@
     "alternatives": "Not showing the category, since it is accounted for in the other statuses.",
     "stakeholders": ["Mayra", "Claudine", "Glora", "Jaya", "Ivan", "Rajneesh", "Faith", "Rachel"],
     "tags": ["scan summary", "status"]
+  },
+  {
+    "id": 3,
+    "date": "2026-06-22",
+    "title": "Access Hub Sign In Page",
+    "project": "Access Hub",
+    "decision": "Move forward with the consolidated sign in option and take it into remaining user testing sessions.",
+    "rationale": "Per Vlad's feedback concerning streamlining the sign in flow, and based on current feedback from user testing sessions so far, the group felt comfortable moving forward with the new Access Hub Sign in page where face sign in and password sign in is separated.",
+    "alternatives": "Staying with the original sign in flow, as it doesn't push the user to use one sign in method over the other.",
+    "stakeholders": ["Jessica", "Jason", "Emily", "Aaron", "Scaria", "Faith", "Rachel", "Carolyn"]
   }
 ]
