@@ -1,0 +1,12 @@
+[
+  {
+    "id": 1,
+    "date": "2026-06-22",
+    "title": "Example Decision",
+    "decision": "We decided to use GitHub Pages to host the project history.",
+    "rationale": "Free hosting, no backend required, accessible to all stakeholders via a public URL.",
+    "alternatives": "Notion, Confluence, Supabase-backed app.",
+    "stakeholders": ["Faith Kim"],
+    "tags": ["infrastructure", "tooling"]
+  }
+]
