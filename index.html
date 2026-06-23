@@ -180,18 +180,6 @@
     .card-image {
       width: 120px;
       flex-shrink: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-
-    .card-image label {
-      font-size: 0.75rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: #888;
-      display: block;
     }
 
     .image-frame {
@@ -208,7 +196,11 @@
       text-align: center;
       line-height: 1.4;
       overflow: hidden;
+      cursor: pointer;
+      transition: border-color 0.15s;
     }
+
+    .image-frame:hover { border-color: #aaa; }
 
     .image-frame img {
       width: 100%;
@@ -222,6 +214,54 @@
       height: 100%;
       border: none;
       border-radius: 9px;
+      pointer-events: none;
+    }
+
+    #lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.75);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #lightbox.open { display: flex; }
+
+    #lightbox-inner {
+      background: white;
+      border-radius: 14px;
+      overflow: hidden;
+      width: min(480px, 90vw);
+      height: min(1040px, 85vh);
+      position: relative;
+    }
+
+    #lightbox-inner img,
+    #lightbox-inner iframe {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border: none;
+    }
+
+    #lightbox-close {
+      position: absolute;
+      top: 0.75rem;
+      right: 0.75rem;
+      background: rgba(0,0,0,0.5);
+      color: white;
+      border: none;
+      border-radius: 99px;
+      width: 28px;
+      height: 28px;
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
     }
 
     #empty {
@@ -249,6 +289,12 @@
 
   <div id="decisions"></div>
   <p id="empty">No decisions match your search.</p>
+
+  <div id="lightbox">
+    <div id="lightbox-inner">
+      <button id="lightbox-close" onclick="closeLightbox()">&#x2715;</button>
+    </div>
+  </div>
 
   <script>
     let allDecisions = [];
@@ -321,8 +367,7 @@
               </ul>
             </div>` : ''}
             <div class="card-image">
-              <label>Reference</label>
-              <div class="image-frame">
+              <div class="image-frame" ${d.figma || d.image ? `onclick="openLightbox(${JSON.stringify(d.figma || null)}, ${JSON.stringify(d.image || null)})"` : ''}>
                 ${d.figma ? `<iframe src="${esc(d.figma)}" allowfullscreen></iframe>`
                   : d.image ? `<img src="${esc(d.image)}" alt="Reference" />`
                   : `No image<br/>added yet`}
@@ -350,6 +395,33 @@
     document.getElementById('search').addEventListener('input', () => render(filtered()));
 
     load();
+
+    function openLightbox(figma, image) {
+      const inner = document.getElementById('lightbox-inner');
+      const btn = document.getElementById('lightbox-close');
+      inner.innerHTML = '';
+      inner.appendChild(btn);
+      if (figma) {
+        const iframe = document.createElement('iframe');
+        iframe.src = figma;
+        iframe.allowFullscreen = true;
+        inner.appendChild(iframe);
+      } else if (image) {
+        const img = document.createElement('img');
+        img.src = image;
+        img.alt = 'Reference';
+        inner.appendChild(img);
+      }
+      document.getElementById('lightbox').classList.add('open');
+    }
+
+    function closeLightbox() {
+      document.getElementById('lightbox').classList.remove('open');
+    }
+
+    document.getElementById('lightbox').addEventListener('click', e => {
+      if (e.target === document.getElementById('lightbox')) closeLightbox();
+    });
   </script>
 </body>
 </html>
