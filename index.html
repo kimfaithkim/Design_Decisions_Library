@@ -261,6 +261,13 @@
       line-height: 1;
     }
 
+    mark {
+      background: #fff176;
+      color: inherit;
+      border-radius: 2px;
+      padding: 0 1px;
+    }
+
     #empty {
       text-align: center;
       color: #999;
@@ -333,6 +340,7 @@
         return;
       }
 
+      const q = document.getElementById('search').value.toLowerCase();
       empty.style.display = 'none';
       container.innerHTML = decisions.map(d => `
         <div class="card">
@@ -341,28 +349,6 @@
             <span class="card-date">${formatDate(d.date)}</span>
           </div>
           <div class="card-body">
-            <div class="card-main">
-              <div class="card-section">
-                <label>Decision</label>
-                <p>${esc(d.decision)}</p>
-              </div>
-              <div class="card-section">
-                <label>Rationale</label>
-                <p>${esc(d.rationale)}</p>
-              </div>
-              ${d.alternatives ? `
-              <div class="card-section">
-                <label>Alternatives Considered</label>
-                <p>${esc(d.alternatives)}</p>
-              </div>` : ''}
-            </div>
-            ${(d.stakeholders || []).length ? `
-            <div class="card-sidebar">
-              <label>Stakeholders</label>
-              <ul>
-                ${[...(d.stakeholders || [])].sort((a, b) => a.localeCompare(b)).map(s => `<li>${esc(s)}</li>`).join('')}
-              </ul>
-            </div>` : ''}
             <div class="card-image">
               <div class="image-frame"
                 ${d.figma ? `data-figma="${esc(d.figma)}"` : ''}
@@ -372,6 +358,28 @@
                   : `No image<br/>added yet`}
               </div>
             </div>
+            <div class="card-main">
+              <div class="card-section">
+                <label>Decision</label>
+                <p>${highlight(esc(d.decision), q)}</p>
+              </div>
+              <div class="card-section">
+                <label>Rationale</label>
+                <p>${highlight(esc(d.rationale), q)}</p>
+              </div>
+              ${d.alternatives ? `
+              <div class="card-section">
+                <label>Alternatives Considered</label>
+                <p>${highlight(esc(d.alternatives), q)}</p>
+              </div>` : ''}
+            </div>
+            ${(d.stakeholders || []).length ? `
+            <div class="card-sidebar">
+              <label>Stakeholders</label>
+              <ul>
+                ${[...(d.stakeholders || [])].sort((a, b) => a.localeCompare(b)).map(s => `<li>${highlight(esc(s), q)}</li>`).join('')}
+              </ul>
+            </div>` : ''}
           </div>
         </div>
       `).join('');
@@ -379,6 +387,13 @@
       container.querySelectorAll('.image-frame[data-figma], .image-frame[data-image]').forEach(el => {
         el.addEventListener('click', () => openLightbox(el.dataset.figma || null, el.dataset.image || null));
       });
+    }
+
+    function highlight(escapedStr, q) {
+      if (!q) return escapedStr;
+      const escapedQ = esc(q);
+      return escapedStr.replace(new RegExp(escapedQ.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi'),
+        m => `<mark>${m}</mark>`);
     }
 
     function esc(str) {
